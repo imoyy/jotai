@@ -1,17 +1,17 @@
 ---
 title: Next.js
-description: How to use Jotai with Next.js
+description: 如何在 Next.js 中使用 Jotai
 nav: 7.03
 keywords: next,nextjs
 ---
 
-### Hydration
+### 水合
 
-Jotai has support for hydration of atoms with `useHydrateAtoms`. The documentation for the hook can be seen [here](../utilities/ssr.mdx).
+Jotai 支持使用 `useHydrateAtoms` 对原子进行水合。该 hook 的文档可以在 [此处](../utilities/ssr.mdx) 查看。
 
-### Sync with router
+### 与路由同步
 
-It's possible to sync Jotai with the router. You can achieve this with `atomWithHash`:
+可以将 Jotai 与路由同步。您可以使用 `atomWithHash` 来实现：
 
 ```js
 const pageAtom = atomWithHash('page', 1, {
@@ -27,17 +27,17 @@ const pageAtom = atomWithHash('page', 1, {
 })
 ```
 
-This way you have full control over what [router event](https://nextjs.org/docs/api-reference/next/router#routerevents) you want to subscribe to.
+这样，您可以完全控制要订阅的 [路由事件](https://nextjs.org/docs/api-reference/next/router#routerevents)。
 
-> #### In Next.js 13
+> #### 在 Next.js 13 中
 >
-> As of Next.js 13 there have been some changes to the `Router.events.on()` which no longer expose events. There are plans in the [App Router Roadmap](https://beta.nextjs.org/docs/app-directory-roadmap#planned-features) for event intercepting and hash handeling. However there is no ETA on when this will be available or what it will look like. For now when trying to the `atomWithHash()` you will not get the atom loading with any data when navigating using the router, only when the page is reloaded or the component is rerendered. It is also recommended that you set the `setHash` option to `replaceState` as Next.js appears to use window.history in the background and this will allow the user to use the browser back button.
+> 从 Next.js 13 开始，`Router.events.on()` 发生了一些变化，不再公开事件。在 [App 路由路线图](https://beta.nextjs.org/docs/app-directory-roadmap#planned-features) 中有关于事件拦截和哈希处理的计划。但是，何时可用以及如何实现还没有时间表。现在，当尝试使用 `atomWithHash()` 时，在使用路由导航时，您将不会看到带有任何数据的 atom 加载，只有在页面重新加载或组件重新渲染时才会加载。建议您将 `setHash` 选项设置为 `replaceState`，因为 Next.js 似乎在后台使用 `window.history`，这将允许用户使用浏览器后退按钮。
 
-### You can't return promises in server side rendering
+### 您不能在服务器端渲染中返回 Promise
 
-It's important to note that you can't return promises with SSR - However, it's possible to guard against it inside the atom definition.
+需要注意的是，您不能在 SSR 中返回 Promise - 但是，可以在 atom 定义中进行防范。
 
-If possible use `useHydrateAtoms` to hydrate values from the server.
+如果可能，使用 `useHydrateAtoms` 从服务器水合值。
 
 ```js
 const postData = atom((get) => {
@@ -45,15 +45,15 @@ const postData = atom((get) => {
   if (isSSR || prefetchedPostData[id]) {
     return prefetchedPostData[id] || EMPTY_POST_DATA
   }
-  return fetchData(id) // returns a promise
+  return fetchData(id) // 返回一个 promise
 })
 ```
 
 ### Provider
 
-By default, Jotai uses an implicit global store to keep track of atom values. This is what is referred to as "provider-less" mode. This becomes an issue in SSR scenario because this global store is kept alive and is shared between multiple requests, which can lead to bugs and security risks.
+默认情况下，Jotai 使用一个隐式的全局 store 来跟踪 atom 的值。这就是所谓的“无提供者”模式。这在 SSR 场景中会成为一个问题，因为这个全局 store 会一直存活，并且在多个请求之间共享，这会导致 bug 和安全风险。
 
-To limit the lifetime of the store to the scope of one request, you need to use a [Provider](../core/provider.mdx) at the root of your app (or a subtree if you're using Jotai only for a part of your application).
+为了将 store 的生命周期限制在一个请求的范围内，您需要在应用程序的根目录（或者如果您只对应用程序的一部分使用 Jotai，则在子树的根目录）使用 [Provider](../core/provider.mdx)。
 
 ```typescript
 import { Provider } from 'jotai'
@@ -67,39 +67,41 @@ function App({ Component, pageProps }: AppProps) {
 }
 ```
 
-In this case:
+在这种情况下：
 
-1. `Provider` will hold the state of the atoms used in its subtree instead of the global store.
-2. `Provider`'s lifetime will be the same as the app itself, and since the app is recreated on each SSR request we essentially limit the lifetime of the store to a single request as well.
+1. `Provider` 将保存其子树中使用的 atom 的状态，而不是全局 store。
+2. `Provider` 的生命周期与应用程序本身相同，并且由于应用程序在每次 SSR 请求时都会重新创建，因此我们实际上将 store 的生命周期限制为单个请求。
 
-### SWC plugins
+### SWC 插件
 
-Jotai provides SWC plugins for better DX while developing with Next.js. [Find more info in the SWC section.](../tools/swc.mdx)
+Jotai 提供了 SWC 插件，以便在使用 Next.js 开发时获得更好的 DX。[在 SWC 部分找到更多信息。](../tools/swc.mdx)
 
-### Examples
+### 示例
 
-#### Clock
+#### 时钟
 
 <Stackblitz
   id="stackblitz-starters-nsugnt"
   file="store%2Findex.ts,components%2FClock.tsx"
 />
 
-#### HN Posts
+#### HN 帖子
 
-Page Router demo:
+页面路由演示：
 
 <Stackblitz
   id="stackblitz-starters-cnz9lg"
   file="store%2Findex.ts,pages%2F_app.tsx,pages%2Findex.tsx"
 />
 
-App Router [demo on Stackblitz](https://stackblitz.com/edit/jotai-nextjs-app-router-demo?file=store%2Findex.ts,app%2Flayout.tsx,components%2FPost.tsx,app%2Fpage.tsx)
+App 路由 [在 Stackblitz 上的演示](https://stackblitz.com/edit/jotai-nextjs-app-router-demo?file=store%2Findex.ts,app%2Flayout.tsx,components%2FPost.tsx,app%2Fpage.tsx)
 
-#### Next.js repo
+#### Next.js 代码库
 
 ```bash
 npx create-next-app --example with-jotai with-jotai-app
 ```
 
-Here's a [link](https://github.com/vercel/next.js/tree/canary/examples/with-jotai).
+这是一个 [链接](https://github.com/vercel/next.js/tree/canary/examples/with-jotai)。
+
+

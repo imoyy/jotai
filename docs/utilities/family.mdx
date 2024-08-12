@@ -1,27 +1,26 @@
 ---
 title: Family
 nav: 3.5
-keywords: family
+keywords: Family
 ---
 
 ## atomFamily
 
-Ref: https://github.com/pmndrs/jotai/issues/23
+参考：https://github.com/pmndrs/jotai/issues/23
 
-### Usage
+### 用法
 
 ```js
 atomFamily(initializeAtom, areEqual): (param) => Atom
 ```
 
-This will create a function that takes `param` and returns an atom.
-If the atom has already been created, it will be returned from the cache.
-`initializeAtom` is a function that can return any kind of atom (`atom()`, `atomWithDefault()`, ...).
-Note that the `areEqual` argument is optional and compares
-if two params are equal (defaults to `Object.is`).
+这将创建一个函数，该函数接收 `param` 并返回一个 atom。
+如果 atom 已经创建，它将从缓存中返回。
+`initializeAtom` 是一个可以返回任何类型的 atom (`atom()`, `atomWithDefault()`, ...) 的函数。
+请注意，`areEqual` 参数是可选的，用于比较两个参数是否相等（默认值为 `Object.is`）。
 
-To reproduce behavior similar to [Recoil's atomFamily/selectorFamily](https://recoiljs.org/docs/api-reference/utils/atomFamily),
-specify a deepEqual function to `areEqual`. For example:
+为了复制类似于 [Recoil 的 atomFamily/selectorFamily](https://recoiljs.org/docs/api-reference/utils/atomFamily) 的行为，
+请为 `areEqual` 指定一个 deepEqual 函数。例如：
 
 ```js
 import { atom } from 'jotai'
@@ -33,26 +32,26 @@ const fooFamily = atomFamily((param) => atom(param), deepEqual)
 
 ### TypeScript
 
-The atom family types will be inferred from initializeAtom. Here's a typical usage with a primitive atom.
+atom family 类型将从 initializeAtom 推断。以下是一个使用基本 atom 的典型用法。
 
 ```ts
 import type { PrimitiveAtom } from 'jotai'
 
 /**
- * here the atom(id) returns a PrimitiveAtom<number>
- * and PrimitiveAtom<number> is a WritableAtom<number, SetStateAction<number>>
+ * 这里 atom(id) 返回一个 PrimitiveAtom<number>
+ * 并且 PrimitiveAtom<number> 是一个 WritableAtom<number, SetStateAction<number>>
  */
 const myFamily = atomFamily((id: number) => atom(id)).
 ```
 
-You can explicitly declare the type of parameter, value, and atom's setState function using TypeScript generics.
+您可以使用 TypeScript 泛型显式声明参数、值和 atom 的 setState 函数的类型。
 
 ```ts
 atomFamily<Param, Value, Update>(initializeAtom: (param: Param) => WritableAtom<Value, Update>, areEqual?: (a: Param, b: Param) => boolean)
 atomFamily<Param, Value>(initializeAtom: (param: Param) => Atom<Value>, areEqual?: (a: Param, b: Param) => boolean)
 ```
 
-If you want to explicitly declare the atomFamily for a primitive atom, you need to use `SetStateAction`.
+如果您想为基本 atom 显式声明 atomFamily，则需要使用 `SetStateAction`。
 
 ```ts
 type SetStateAction<Value> = Value | ((prev: Value) => Value)
@@ -62,20 +61,20 @@ const myFamily = atomFamily<number, number, SetStateAction<number>>(
 )
 ```
 
-### Caveat: Memory Leaks
+### 警告：内存泄漏
 
-Internally, atomFamily is just a Map whose key is a param and whose value is an atom config.
-Unless you explicitly remove unused params, this leads to memory leaks.
-This is crucial if you use infinite number of params.
+在内部，atomFamily 只是一个 Map，其键是参数，其值是 atom 配置。
+除非您显式删除未使用的参数，否则会导致内存泄漏。
+如果您使用无限数量的参数，这一点至关重要。
 
-There are two ways to remove params.
+有两种方法可以删除参数。
 
-- `myFamily.remove(param)` allows you to remove a specific param.
-- `myFamily.setShouldRemove(shouldRemove)` is to register `shouldRemove` function which runs immediately **and** when you are to get an atom from a cache.
-  - shouldRemove is a function that takes two arguments `createdAt` in milliseconds and `param`, and returns a boolean value.
-  - setting `null` will remove the previously registered function.
+- `myFamily.remove(param)` 允许您删除特定参数。
+- `myFamily.setShouldRemove(shouldRemove)` 用于注册 `shouldRemove` 函数，该函数会在您从缓存中获取 atom 时立即运行 **以及**。
+  - shouldRemove 是一个函数，它接收两个参数 `createdAt`（以毫秒为单位）和 `param`，并返回一个布尔值。
+  - 设置 `null` 将删除之前注册的函数。
 
-### Examples
+### 示例
 
 ```js
 import { atom } from 'jotai'
@@ -84,7 +83,7 @@ import { atomFamily } from 'jotai/utils'
 const todoFamily = atomFamily((name) => atom(name))
 
 todoFamily('foo')
-// this will create a new atom('foo'), or return the one if already created
+// 这将创建一个新的 atom('foo')，或者如果已经创建则返回它
 ```
 
 ```js
@@ -115,3 +114,5 @@ const todoFamily = atomFamily(
 ### Codesandbox
 
 <CodeSandbox id="huxd4i" />
+
+

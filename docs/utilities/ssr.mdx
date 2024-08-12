@@ -18,11 +18,11 @@ const countAtom = atom(0)
 const CounterPage = ({ countFromServer }) => {
   useHydrateAtoms([[countAtom, countFromServer]])
   const [count] = useAtom(countAtom)
-  // count would be the value of `countFromServer`, not 0.
+  // count 将是 `countFromServer` 的值，而不是 0。
 }
 ```
 
-The primary use case for `useHydrateAtoms` are SSR apps like Next.js, where an initial value is e.g. fetched on the server, which can be passed to a component by props.
+`useHydrateAtoms` 的主要用例是像 Next.js 这样的 SSR 应用，其中初始值例如是在服务器上获取的，可以通过 props 传递给组件。
 
 ```ts
 // Definition
@@ -32,10 +32,10 @@ function useHydrateAtoms(
 ): void
 ```
 
-The hook takes an iterable of tuples containing `[atom, value]` as an argument and optional options.
+该 hook 接受一个包含 `[atom, value]` 元组的可迭代对象作为参数，以及可选的选项。
 
 ```js
-// Usage with an array, specifying a store
+// 使用数组的用法，指定一个 store
 useHydrateAtoms(
   [
     [countAtom, 42],
@@ -43,13 +43,13 @@ useHydrateAtoms(
   ],
   { store: myStore },
 )
-// Or with a map
+// 或者使用 Map
 useHydrateAtoms(new Map([[count, 42]]))
 ```
 
-Atoms can only be hydrated once per store. Therefore, if the initial value used is changed during rerenders, it won't update the atom value.
-If there is a unique need to re-hydrate a previously hydrated atom, pass the optional dangerouslyForceHydrate as true
-and note that it may behave wrongly in concurrent rendering.
+每个 store 中的 atom 只能被水合一次。因此，如果在重新渲染期间使用的初始值发生更改，它不会更新 atom 的值。
+如果需要重新水合之前已水合的 atom，请将可选的 `dangerouslyForceHydrate` 设置为 true，
+并注意它可能在并发渲染中表现异常。
 
 ```js
 useHydrateAtoms(
@@ -63,7 +63,7 @@ useHydrateAtoms(
 )
 ```
 
-If there's a need to hydrate in multiple stores, use multiple `useHydrateAtoms` hooks to achieve that.
+如果需要在多个 store 中水合，请使用多个 `useHydrateAtoms` hook 来实现。
 
 ```js
 useHydrateAtoms([
@@ -79,7 +79,7 @@ useHydrateAtoms(
 )
 ```
 
-If you are using TypeScript with target `ES5`, you might need `as const` cast on the array to preserve the tuple type.
+如果您使用目标为 `ES5` 的 TypeScript，可能需要在数组上进行 `as const` 强制类型转换以保留元组类型。
 
 ```ts
 useHydrateAtoms([
@@ -88,8 +88,10 @@ useHydrateAtoms([
 ] as const)
 ```
 
-### Demo
+### 演示
 
 <Stackblitz id="stackblitz-starters-b7cvxi" file="pages%2Findex.tsx" />
 
-There's more examples in the [Next.js section](../guides/nextjs.mdx).
+在 [Next.js 部分](../guides/nextjs.mdx) 中有更多示例。
+
+
